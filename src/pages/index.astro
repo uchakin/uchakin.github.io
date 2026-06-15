@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import openwater from '../assets/openwater.jpg';
 
 const social = {
   linkedin: 'https://www.linkedin.com/in/dmitry-uchakin',
@@ -203,12 +205,13 @@ const fieldLabel = 'mb-1.5 block text-sm text-muted';
     id="top"
     class="hero-ocean px-6 pt-40 pb-32 sm:pt-48 sm:pb-40"
   >
-    <div class="mx-auto max-w-2xl">
+    <div class="mx-auto grid max-w-5xl items-center gap-12 md:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+      <div>
       <p class="font-mono text-xs uppercase tracking-[0.28em] text-[#8fc9d6]">
         Security Automation &amp; Detection Engineer
       </p>
 
-      <h1 class="display-xl mt-5 text-5xl text-white sm:text-7xl">
+      <h1 class="display-xl mt-5 text-5xl text-white sm:text-6xl lg:text-7xl">
         Dmitry Uchakin
       </h1>
 
@@ -274,6 +277,21 @@ const fieldLabel = 'mb-1.5 block text-sm text-muted';
           href={social.email}
           class="text-stone-300 transition-colors hover:text-accent">Email</a
         >
+      </div>
+      </div>
+
+      {/* right: open-water portrait (X-WATERS Antalya 5K) */}
+      <div class="md:pl-2">
+        <div class="relative mx-auto w-full max-w-[256px] md:ml-auto md:mr-0 md:max-w-[360px]">
+          <Image
+            src={openwater}
+            alt="Dmitry Uchakin after the X-WATERS Antalya 5K open-water swim"
+            class="w-full rounded-2xl object-cover shadow-2xl shadow-black/50 ring-1 ring-white/15"
+            widths={[256, 360, 720]}
+            sizes="(min-width: 768px) 360px, 256px"
+            loading="eager"
+          />
+        </div>
       </div>
     </div>
 
