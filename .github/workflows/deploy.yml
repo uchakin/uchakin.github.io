@@ -13,10 +13,11 @@ permissions:
   pages: write
   id-token: write
 
-# Allow one concurrent deployment; don't cancel an in-progress production deploy
+# Only one Pages run at a time; a newer push supersedes an in-flight one
+# (the latest commit always wins, which avoids "in progress deployment" races).
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
