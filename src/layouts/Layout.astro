@@ -1,0 +1,169 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Dmitry Uchakin — Security Automation & Detection Engineer',
+  description = 'Dmitry Uchakin is a Senior Cybersecurity Engineer in London focused on detection engineering, security automation, and applied AI in security operations.',
+} = Astro.props;
+
+const canonical = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).href
+  : Astro.url.pathname;
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Dmitry Uchakin',
+  jobTitle: 'Senior Cybersecurity Engineer',
+  description,
+  url: 'https://uchakin.github.io',
+  email: 'mailto:dmitry.uchakin1@gmail.com',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'London',
+    addressCountry: 'GB',
+  },
+  sameAs: [
+    'https://www.linkedin.com/in/dmitry-uchakin',
+    'https://github.com/uchakin',
+    'https://vulners.com',
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Dmitry Uchakin" />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Theme color follows the active palette -->
+    <meta
+      name="theme-color"
+      content="#fafaf7"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#1a1a1a"
+      media="(prefers-color-scheme: dark)"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_GB" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(person)} />
+
+    <!-- Set the theme before first paint to avoid a flash of the wrong mode. -->
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem('theme');
+        const theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      })();
+    </script>
+  </head>
+
+  <body>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:text-white"
+    >
+      Skip to content
+    </a>
+
+    <Nav />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="border-t border-line">
+      <div
+        class="mx-auto flex max-w-2xl flex-col gap-3 px-6 py-10 text-sm text-muted sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div class="space-y-1">
+          <p>© {new Date().getFullYear()} Dmitry Uchakin</p>
+          <p class="text-xs text-muted/80">
+            No trackers, no cookies, no prompt injection. I checked twice.
+          </p>
+        </div>
+        <nav class="flex gap-5" aria-label="Footer">
+          <a
+            href="https://www.linkedin.com/in/dmitry-uchakin"
+            class="transition-colors hover:text-accent"
+            rel="me noopener"
+            target="_blank">LinkedIn</a
+          >
+          <a
+            href="https://github.com/uchakin"
+            class="transition-colors hover:text-accent"
+            rel="me noopener"
+            target="_blank">GitHub</a
+          >
+          <a
+            href="mailto:dmitry.uchakin1@gmail.com"
+            class="transition-colors hover:text-accent">Email</a
+          >
+        </nav>
+      </div>
+    </footer>
+
+    <!-- Gentle reveal-on-scroll for any element tagged `.reveal`. -->
+    <script is:inline>
+      (() => {
+        const items = document.querySelectorAll('.reveal');
+        if (
+          !items.length ||
+          !('IntersectionObserver' in window) ||
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ) {
+          items.forEach((el) => el.classList.add('is-in'));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-in');
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.1 },
+        );
+        items.forEach((el) => io.observe(el));
+      })();
+    </script>
+  </body>
+</html>

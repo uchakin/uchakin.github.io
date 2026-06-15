@@ -1,0 +1,626 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const social = {
+  linkedin: 'https://www.linkedin.com/in/dmitry-uchakin',
+  github: 'https://github.com/uchakin',
+  email: 'mailto:dmitry.uchakin1@gmail.com',
+};
+
+const cvPath = '/Dmitry-Uchakin-CV.pdf';
+
+// Contact form: paste your Formspree form ID (https://formspree.io) here.
+// Until then the form falls back to a "email me directly" message.
+const FORM_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+
+// Career history — reverse chronological. Edit a row, commit, push.
+const experience = [
+  {
+    company: 'Revizto',
+    role: 'Senior Cybersecurity Engineer',
+    location: 'London',
+    period: 'Apr 2025 – Present',
+    highlights: [
+      'Own the end-to-end detection lifecycle in Azure Sentinel and CrowdStrike as code — Terraform CI/CD pipelines deploy, tune, and maintain high-fidelity rules, with incidents routed to n8n for automated response.',
+      'Built an LLM-augmented triage pipeline that reconstructs process trees for CrowdStrike alerts; system prompts are versioned and evaluated against held-out cases to minimise hallucination before output reaches analysts.',
+      'Engineered a parallel software-security analysis pipeline that runs checks across 7 domains on demand and returns a risk assessment within minutes.',
+      'Architected a ChatOps incident hub with custom enrichment, one-click containment, and automated ticketing from chat.',
+    ],
+    stack: ['Azure Sentinel', 'CrowdStrike', 'Terraform', 'n8n', 'Python', 'LLMs'],
+  },
+  {
+    company: 'SecurityHQ',
+    role: 'Automation Team Lead → Senior Automation Engineer',
+    location: 'London',
+    period: 'Nov 2023 – Jun 2025',
+    highlights: [
+      'Led the migration from legacy IBM Resilient SOAR to n8n, decoupling automation logic from the SIEM and cutting licensing overhead.',
+      'Architected a multi-tenant automation framework handling incidents from 10+ QRadar consoles globally, with cross-region high availability.',
+      'Introduced DevOps into the SOC: Git-based version control for playbooks and mandatory code review for all security automation.',
+      'Automated repetitive Tier-1 handling end-to-end and built API integration layers bridging legacy SIEMs with modern ticketing and messaging.',
+    ],
+    stack: ['n8n', 'IBM Resilient', 'QRadar', 'Python', 'Git', 'Detection-as-Code'],
+  },
+  {
+    company: 'CyberO',
+    role: 'SOC Manager',
+    location: 'Luanda, Angola',
+    period: 'May 2023 – Apr 2024',
+    highlights: [
+      'Stood up full-spectrum SOC operations and incident-response protocols from scratch for major financial clients — defining log-visibility requirements and escalation paths.',
+      'Designed custom detection logic tuned to regional threat landscapes and banking infrastructure.',
+    ],
+    stack: ['SOC build-out', 'Detection Engineering', 'Incident Response'],
+  },
+  {
+    company: 'Kaspersky',
+    role: 'Senior SOC Analyst',
+    location: 'Moscow',
+    period: 'Feb 2019 – May 2023',
+    highlights: [
+      'Led investigations into sophisticated APT campaigns using memory forensics and network-traffic analysis.',
+      'Developed and tuned complex detection logic from new malware strains and threat intel, contributing directly to the global detection database.',
+      'Scripted Python utilities to automate evidence collection and artifact parsing, cutting L1 workload.',
+      'Onboarded and mentored 10+ analysts with internal training tracks on Windows forensics and malware analysis. Progressed intern → junior → senior.',
+    ],
+    stack: ['Memory forensics', 'YARA', 'Sigma', 'Python', 'MITRE ATT&CK'],
+  },
+  {
+    company: 'InfoWatch',
+    role: 'QA Automation Engineer',
+    location: 'Moscow',
+    period: 'Apr 2017 – Feb 2019',
+    highlights: [
+      'Built Python automated-testing frameworks for DLP endpoint agents, ensuring stability across Windows and Linux.',
+    ],
+    stack: ['Python', 'DLP', 'Test automation'],
+  },
+];
+
+// Skill groups mirror how the work actually breaks down.
+const skills = [
+  {
+    group: 'Detection & Response',
+    items: [
+      'Detection Engineering (Sigma, YARA)',
+      'SIEM content (Sentinel, QRadar, Elastic, Splunk)',
+      'Threat Hunting',
+      'MITRE ATT&CK',
+      'EDR (CrowdStrike, SentinelOne, Sysmon)',
+    ],
+  },
+  {
+    group: 'Security Automation',
+    items: [
+      'SOAR (n8n, IBM Resilient, TheHive)',
+      'Python (boto3, pandas, requests)',
+      'API integrations',
+      'Slack apps',
+    ],
+  },
+  {
+    group: 'DevSecOps & AI',
+    items: [
+      'Terraform (Detection-as-Code)',
+      'CI/CD for security',
+      'Git',
+      'Prompt engineering & LLM evals',
+      'Agentic workflows',
+    ],
+  },
+  {
+    group: 'Elastic Stack',
+    items: ['Elasticsearch', 'Kibana', 'Logstash', 'Beats', 'ECS'],
+  },
+  {
+    group: 'Cloud & Infrastructure',
+    items: [
+      'AWS (IAM, Lambda, CloudWatch, VPC)',
+      'Azure',
+      'Docker',
+      'Kubernetes',
+      'Linux',
+      'Windows',
+    ],
+  },
+];
+
+// Add a project: append an object here, commit, push. That's the whole flow.
+const projects = [
+  {
+    title: 'Supply Chain Monitor',
+    context: 'Axios extension',
+    description:
+      "Extended Elastic TRADE's open-source supply-chain monitor with local-LLM (Qwen) support alongside Codex and Claude, and added Go and Rust ecosystem coverage the original lacked. Running in production internally for package supply-chain monitoring.",
+    tech: ['Python', 'Local + hosted LLMs', 'GitHub'],
+  },
+  {
+    title: 'LLM-augmented Triage Pipeline',
+    context: 'Revizto',
+    description:
+      'Automated triage for CrowdStrike alerts: LLMs reconstruct process trees and produce structured analysis. Prompt evaluation acts as a quality gate — system prompts versioned in Git, held-out test cases, hallucination measured before output reaches analysts. LLM output is treated as a reasoning component held to the same review discipline as rule logic.',
+    tech: ['Python', 'Claude', 'Prompt eval', 'CrowdStrike API'],
+  },
+  {
+    title: 'AI Skill / Plugin Security Review Pipeline',
+    context: '',
+    description:
+      'Automated security review of the LLM tools and plugins developers want to adopt. Submit a GitHub link; the pipeline runs Snyk SAST plus OWASP LLM Top 10 checks and a final structured review. Caught a Hermes agent carrying prompt-injection patterns (“god mode” instructions) before adoption.',
+    tech: ['Python', 'Snyk', 'OWASP LLM Top 10', 'n8n'],
+  },
+  {
+    title: 'RAG for AI SOC',
+    context: '',
+    description:
+      'Retrieval-augmented generation for security-operations context — surfacing relevant past incidents, runbooks, and threat intel when triaging new alerts. Retrieved content is treated as untrusted and filtered for prompt injection before it reaches the LLM.',
+    tech: ['Python', 'Vector store', 'LLM', 'Prompt-injection filtering'],
+  },
+  {
+    title: 'Lessons-Learned Slack Bot',
+    context: '',
+    description:
+      'Automated post-incident lessons collection over Slack DMs. After a compliance audit flagged gaps in the lessons-learned process, this bot messages affected users with three structured questions and feeds the answers back into incident records. Now a standard part of IR closure.',
+    tech: ['Python', 'Slack API', 'LLM summarization'],
+  },
+  {
+    title: 'Multi-tenant SOAR Migration',
+    context: 'SecurityHQ · archived',
+    description:
+      'Led the migration from IBM Resilient SOAR to n8n across 10+ QRadar consoles worldwide — roughly 1,000 incidents a day across the customer base. Designed for cross-region availability, multi-tenant routing, and zero downtime during cutover.',
+    tech: ['n8n', 'Python', 'QRadar', 'SentinelOne'],
+  },
+];
+
+const education = [
+  {
+    title: 'MSc, Information Technology Security',
+    org: 'Department of Information Technology',
+    period: '2015 – 2020',
+  },
+];
+
+const certifications = [
+  'AWS Certified Cloud Practitioner',
+  'Blue Team Level 1 (BTL1)',
+  'IBM QRadar — Resilient (SOAR)',
+  'Hunt APTs with YARA like a GReAT Ninja',
+];
+
+const languages = ['English — Advanced', 'Russian — Native'];
+
+const sectionLabel =
+  'mb-10 font-mono text-xs font-medium uppercase tracking-[0.2em] text-accent';
+const techTag =
+  'rounded-full border border-line px-2.5 py-1 font-mono text-xs text-muted';
+const fieldClass =
+  'w-full rounded-md border border-line bg-transparent px-3 py-2 text-fg transition-colors placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent';
+const fieldLabel = 'mb-1.5 block text-sm text-muted';
+---
+
+<Layout>
+  {/* ---------- Hero (open water) ---------- */}
+  <section
+    id="top"
+    class="hero-ocean px-6 pt-40 pb-32 sm:pt-48 sm:pb-40"
+  >
+    <div class="mx-auto max-w-2xl">
+      <p class="font-mono text-xs uppercase tracking-[0.28em] text-[#8fc9d6]">
+        Security Automation &amp; Detection Engineer
+      </p>
+
+      <h1 class="display-xl mt-5 text-5xl text-white sm:text-7xl">
+        Dmitry Uchakin
+      </h1>
+
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-stone-200">
+        Detection engineering, security automation, and applied AI in security
+        operations.
+      </p>
+      <p class="mt-3 max-w-xl leading-relaxed text-stone-400">
+        Open-water swimmer and detection engineer — most at home in deep water
+        and high-stakes alerts.
+      </p>
+
+      {/* journey */}
+      <div
+        class="mt-8 flex items-center gap-3 font-mono text-xs uppercase tracking-wider text-stone-400"
+      >
+        <span>Moscow</span>
+        <span class="h-px w-6 bg-white/25"></span>
+        <span>Luanda</span>
+        <span class="h-px w-6 bg-white/25"></span>
+        <span class="text-white">London</span>
+      </div>
+
+      {/* actions */}
+      <div class="mt-9 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm">
+        <a
+          href={cvPath}
+          download
+          class="inline-flex items-center gap-2 rounded-md border border-white/25 px-4 py-2 font-medium text-stone-100 transition-colors hover:border-accent hover:text-accent"
+        >
+          <svg
+            class="h-4 w-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 3v12m0 0 4-4m-4 4-4-4"></path>
+            <path d="M5 21h14"></path>
+          </svg>
+          Download CV
+        </a>
+
+        <span class="hidden text-white/20 sm:inline" aria-hidden="true">/</span>
+
+        <a
+          href={social.linkedin}
+          class="text-stone-300 transition-colors hover:text-accent"
+          rel="me noopener"
+          target="_blank">LinkedIn ↗</a
+        >
+        <a
+          href={social.github}
+          class="text-stone-300 transition-colors hover:text-accent"
+          rel="me noopener"
+          target="_blank">GitHub ↗</a
+        >
+        <a
+          href={social.email}
+          class="text-stone-300 transition-colors hover:text-accent">Email</a
+        >
+      </div>
+    </div>
+
+    {/* wave divider into the body */}
+    <div class="pointer-events-none absolute inset-x-0 bottom-0" aria-hidden="true">
+      <svg
+        class="block h-12 w-full sm:h-16"
+        viewBox="0 0 1440 80"
+        preserveAspectRatio="none"
+      >
+        <path
+          class="fill-bg"
+          d="M0,42 C240,84 420,8 720,34 C1010,59 1230,14 1440,40 L1440,80 L0,80 Z"
+        ></path>
+      </svg>
+    </div>
+  </section>
+
+  {/* ---------- About ---------- */}
+  <section id="about" class="px-6 py-20 sm:py-24">
+    <div class="reveal mx-auto max-w-2xl">
+      <h2 class={sectionLabel}>About</h2>
+      <div
+        class="space-y-6 text-lg leading-relaxed text-fg [&_strong]:font-semibold"
+      >
+        <p>
+          I'm a Senior Cybersecurity Engineer at <strong>Revizto</strong> with
+          8+ years designing detection content and security automation across
+          SIEM and EDR platforms. My focus now is Detection-as-Code and applied
+          AI in the SOC — shipping detection logic through Terraform CI/CD on
+          Sentinel and CrowdStrike, and building LLM-augmented triage pipelines
+          where prompt evaluation is a real quality gate, not an afterthought.
+        </p>
+        <p>
+          I came up through the SOC: four years at <strong>Kaspersky</strong>
+          hunting APTs and writing detection content, standing up a SOC from
+          scratch in Angola, then leading automation at
+          <strong>SecurityHQ</strong>. The thread through all of it — treat
+          detection logic as code, and hold AI to the same review discipline as
+          everything else in the stack.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ---------- Experience ---------- */}
+  <section id="experience" class="border-t border-line px-6 py-20 sm:py-24">
+    <div class="reveal mx-auto max-w-2xl">
+      <h2 class={sectionLabel}>Experience</h2>
+      <ol class="space-y-12">
+        {
+          experience.map((job) => (
+            <li>
+              <div class="flex flex-col gap-x-6 sm:flex-row sm:items-baseline sm:justify-between">
+                <h3 class="font-serif text-xl font-semibold tracking-tight text-fg">
+                  {job.company}
+                </h3>
+                <span class="shrink-0 font-mono text-xs uppercase tracking-wider text-muted">
+                  {job.period}
+                </span>
+              </div>
+              <p class="mt-1 text-sm text-fg">
+                {job.role}
+                <span class="text-muted"> · {job.location}</span>
+              </p>
+              <ul class="mt-4 space-y-2">
+                {job.highlights.map((h) => (
+                  <li class="relative pl-5 leading-relaxed text-muted">
+                    <span
+                      class="absolute left-0 top-[0.65em] h-1.5 w-1.5 rounded-full bg-accent"
+                      aria-hidden="true"
+                    />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+              <ul class="mt-4 flex flex-wrap gap-2">
+                {job.stack.map((item) => (
+                  <li class={techTag}>{item}</li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {/* ---------- Skills ---------- */}
+  <section id="skills" class="border-t border-line px-6 py-20 sm:py-24">
+    <div class="reveal mx-auto max-w-2xl">
+      <h2 class={sectionLabel}>Skills</h2>
+      <dl class="space-y-8">
+        {
+          skills.map((cat) => (
+            <div class="grid gap-3 sm:grid-cols-[200px_1fr] sm:gap-6">
+              <dt class="font-serif text-base font-semibold text-fg">
+                {cat.group}
+              </dt>
+              <dd>
+                <ul class="flex flex-wrap gap-2">
+                  {cat.items.map((item) => (
+                    <li class={techTag}>{item}</li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  {/* ---------- Projects ---------- */}
+  <section id="projects" class="border-t border-line px-6 py-20 sm:py-24">
+    <div class="reveal mx-auto max-w-2xl">
+      <h2 class={sectionLabel}>Selected Work</h2>
+      <ul class="space-y-12">
+        {
+          projects.map((project) => (
+            <li>
+              <h3 class="font-serif text-2xl font-semibold tracking-tight text-fg">
+                {project.title}
+                {project.context && (
+                  <span class="ml-2 align-middle font-sans text-sm font-normal text-muted">
+                    {project.context}
+                  </span>
+                )}
+              </h3>
+              <p class="mt-3 leading-relaxed text-muted">
+                {project.description}
+              </p>
+              <ul class="mt-4 flex flex-wrap gap-2">
+                {project.tech.map((item) => (
+                  <li class={techTag}>{item}</li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  {/* ---------- Education & Certifications ---------- */}
+  <section id="education" class="border-t border-line px-6 py-20 sm:py-24">
+    <div class="reveal mx-auto max-w-2xl">
+      <h2 class={sectionLabel}>Education &amp; Certifications</h2>
+      <div class="grid gap-10 sm:grid-cols-2">
+        <div>
+          <h3 class="font-serif text-lg font-semibold text-fg">Education</h3>
+          {
+            education.map((e) => (
+              <div class="mt-3">
+                <p class="text-fg">{e.title}</p>
+                <p class="text-sm text-muted">
+                  {e.org} · {e.period}
+                </p>
+              </div>
+            ))
+          }
+
+          <h3 class="mt-8 font-serif text-lg font-semibold text-fg">
+            Languages
+          </h3>
+          <ul class="mt-3 space-y-1 text-muted">
+            {languages.map((l) => <li>{l}</li>)}
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-serif text-lg font-semibold text-fg">
+            Certifications
+          </h3>
+          <ul class="mt-3 space-y-2">
+            {
+              certifications.map((c) => (
+                <li class="relative pl-5 leading-relaxed text-muted">
+                  <span
+                    class="absolute left-0 top-[0.6em] h-1.5 w-1.5 rounded-full bg-accent"
+                    aria-hidden="true"
+                  />
+                  {c}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ---------- Writing ---------- */}
+  <section id="writing" class="border-t border-line px-6 py-20 sm:py-24">
+    <div class="reveal mx-auto max-w-2xl">
+      <h2 class={sectionLabel}>Writing</h2>
+      <div class="space-y-3">
+        <h3 class="font-serif text-2xl font-semibold tracking-tight text-fg">
+          <a
+            href="https://vulners.com"
+            class="transition-colors hover:text-accent"
+            rel="noopener"
+            target="_blank">Vulners ↗</a
+          >
+          <span class="ml-2 align-middle font-sans text-sm font-normal text-muted"
+            >Security Advocate &amp; Technical Advisor · 2020–Present</span
+          >
+        </h3>
+        <p class="leading-relaxed text-muted">
+          100+ technical deep-dives on vulnerability trends and detection
+          topics, read by an audience of roughly 5,000 security engineers a
+          month.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ---------- Contact ---------- */}
+  <section id="contact" class="border-t border-line px-6 py-20 sm:py-24">
+    <div class="reveal mx-auto max-w-2xl">
+      <h2 class={sectionLabel}>Contact</h2>
+      <p class="max-w-xl text-lg leading-relaxed text-muted">
+        Always happy to talk detection engineering, security automation, and
+        applied AI in the SOC.
+      </p>
+
+      <div class="mt-10 grid gap-12 md:grid-cols-2">
+        {/* Direct links */}
+        <ul class="space-y-3 text-lg">
+          <li class="flex items-baseline gap-3">
+            <span
+              class="w-20 shrink-0 font-mono text-xs uppercase tracking-wider text-muted"
+              >Email</span
+            >
+            <a
+              href={social.email}
+              class="text-fg transition-colors hover:text-accent"
+              >dmitry.uchakin1@gmail.com</a
+            >
+          </li>
+          <li class="flex items-baseline gap-3">
+            <span
+              class="w-20 shrink-0 font-mono text-xs uppercase tracking-wider text-muted"
+              >LinkedIn</span
+            >
+            <a
+              href={social.linkedin}
+              class="text-fg transition-colors hover:text-accent"
+              rel="me noopener"
+              target="_blank">linkedin.com/in/dmitry-uchakin</a
+            >
+          </li>
+          <li class="flex items-baseline gap-3">
+            <span
+              class="w-20 shrink-0 font-mono text-xs uppercase tracking-wider text-muted"
+              >GitHub</span
+            >
+            <a
+              href={social.github}
+              class="text-fg transition-colors hover:text-accent"
+              rel="me noopener"
+              target="_blank">github.com/uchakin</a
+            >
+          </li>
+        </ul>
+
+        {/* Contact form */}
+        <form id="contact-form" action={FORM_ENDPOINT} method="POST" class="space-y-4">
+          <div>
+            <label for="name" class={fieldLabel}>Name</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              autocomplete="name"
+              class={fieldClass}
+            />
+          </div>
+          <div>
+            <label for="email" class={fieldLabel}>Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+              class={fieldClass}
+            />
+          </div>
+          <div>
+            <label for="message" class={fieldLabel}>Message</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              required
+              class={`${fieldClass} resize-y`}></textarea>
+          </div>
+          <button
+            type="submit"
+            class="inline-flex items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+          >
+            Send message
+          </button>
+          <p
+            id="form-status"
+            role="status"
+            aria-live="polite"
+            class="text-sm text-muted"
+          >
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (() => {
+      const form = document.getElementById('contact-form');
+      if (!form) return;
+      const status = document.getElementById('form-status');
+      const email = 'dmitry.uchakin1@gmail.com';
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const action = form.getAttribute('action') || '';
+        if (!action.startsWith('http') || action.includes('YOUR_FORM_ID')) {
+          status.textContent = `Contact form isn’t wired up yet — please email ${email} directly.`;
+          return;
+        }
+        status.textContent = 'Sending…';
+        try {
+          const response = await fetch(action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { Accept: 'application/json' },
+          });
+          if (response.ok) {
+            form.reset();
+            status.textContent = 'Thanks — your message is on its way.';
+          } else {
+            status.textContent = `Something went wrong. Please email ${email} instead.`;
+          }
+        } catch {
+          status.textContent = `Network error. Please email ${email} instead.`;
+        }
+      });
+    })();
+  </script>
+</Layout>

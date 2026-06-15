@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+/* Enable class-based dark mode (toggled by adding `.dark` to <html>). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Design tokens that don't change with the theme. */
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* `font-serif` utilities now render the display face. */
+  --font-serif: "Fraunces Variable", "Iowan Old Style", "Palatino Linotype",
+    Palatino, Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo,
+    Consolas, monospace;
+
+  --color-accent: #c8553d; /* rust spark — the rock-and-roll energy */
+  --color-accent-hover: #b04632;
+  --color-ocean: #0e4f5e; /* deep open water */
+  --color-ocean-bright: #2b93a6;
+}
+
+/* Theme-aware tokens. `inline` makes utilities reference the variable directly,
+   so flipping these under `.dark` recolors the whole site. */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-translucent: var(--bg-translucent);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+}
+
+:root {
+  --bg: #fafaf7; /* warm paper */
+  --bg-translucent: rgba(250, 250, 247, 0.82);
+  --fg: #1c1b1a;
+  --muted: #57534e;
+  --line: rgba(0, 0, 0, 0.08);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0e1417; /* deep ocean night */
+  --bg-translucent: rgba(14, 20, 23, 0.82);
+  --fg: #ece9e3;
+  --muted: #94a0a0;
+  --line: rgba(255, 255, 255, 0.09);
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+/* Big display lockup — Fraunces dialled toward its bolder, higher-contrast end. */
+.display-xl {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-variation-settings: "opsz" 144, "wght" 600, "SOFT" 0, "WONK" 1;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
+}
+
+/* ---------- Open-water hero ---------- */
+.hero-ocean {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: #f1ede5;
+  background:
+    radial-gradient(120% 80% at 18% 0%, #15788c 0%, transparent 56%),
+    radial-gradient(110% 90% at 92% 8%, #0b3e4c 0%, transparent 52%),
+    linear-gradient(180deg, #0c4151 0%, #061f27 100%);
+}
+
+/* Drifting light pools — like sun through deep water. */
+.hero-ocean::before {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  z-index: -1;
+  background:
+    radial-gradient(38% 28% at 30% 22%, rgba(120, 210, 230, 0.2), transparent 70%),
+    radial-gradient(34% 24% at 72% 42%, rgba(70, 170, 195, 0.16), transparent 72%);
+  filter: blur(24px);
+  animation: hero-drift 20s ease-in-out infinite alternate;
+}
+
+/* Faint caustic light rays. */
+.hero-ocean::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: repeating-linear-gradient(
+    104deg,
+    rgba(255, 255, 255, 0.05) 0 2px,
+    transparent 2px 64px
+  );
+  mix-blend-mode: screen;
+  opacity: 0.45;
+  animation: hero-rays 26s linear infinite;
+}
+
+@keyframes hero-drift {
+  0% {
+    transform: translate3d(-2%, -1%, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(3%, 2%, 0) scale(1.08);
+  }
+}
+
+@keyframes hero-rays {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 640px 0;
+  }
+}
+
+/* ---------- Scroll reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Top nav: transparent over the hero, solid once scrolled ---------- */
+.site-nav {
+  background-color: transparent;
+  border-color: transparent;
+  color: #f1ede5;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+.site-nav.is-solid {
+  background-color: var(--bg-translucent);
+  border-color: var(--line);
+  color: var(--fg);
+  backdrop-filter: blur(10px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .hero-ocean::before,
+  .hero-ocean::after {
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
