@@ -1,7 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
-import openwater from '../assets/openwater.jpg';
+import portrait from '../assets/london.jpg';
+// import openwater from '../assets/openwater.jpg'; // kept for when the open-water shot returns
 
 const social = {
   linkedin: 'https://www.linkedin.com/in/dmitry-uchakin',
@@ -279,12 +280,12 @@ const fieldLabel = 'mb-1.5 block text-sm text-muted';
       </div>
       </div>
 
-      {/* right: open-water portrait (X-WATERS Antalya 5K) */}
+      {/* right: portrait (London — Battersea Power Station) */}
       <div class="md:pl-2">
         <div class="relative mx-auto w-full max-w-[256px] md:ml-auto md:mr-0 md:max-w-[360px]">
           <Image
-            src={openwater}
-            alt="Dmitry Uchakin after the X-WATERS Antalya 5K open-water swim"
+            src={portrait}
+            alt="Dmitry Uchakin by the River Thames in London, Battersea Power Station behind"
             class="w-full rounded-2xl object-cover shadow-2xl shadow-black/50 ring-1 ring-white/15"
             widths={[256, 360, 720]}
             sizes="(min-width: 768px) 360px, 256px"
